@@ -63,7 +63,7 @@ Compared to Assignment 3, setup was faster because we already knew the project s
 
 ### Existing CI
 
-The project already has a GitHub Actions workflow (`.github/workflows/pythonpackage.yml`) that runs on pull requests. No CI setup was needed on our part.
+The project already has a GitHub Actions workflow (`.github/workflows/pythonpackage.yml`) that runs on pull requests. But added also so it is triggered on push to the master branch.
 
 ## Effort spent
 
