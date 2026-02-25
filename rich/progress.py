@@ -1177,6 +1177,16 @@ class Progress(JupyterMixin):
             if not self.console.is_interactive and not self.console.is_jupyter:
                 self.console.print()
 
+    def pause(self) -> None:
+        """Pause the progress display."""
+        if not self.disable:
+            self.live.pause()
+
+    def resume(self) -> None:
+        """Resume the progress display after pause."""
+        if not self.disable:
+            self.live.resume(refresh=True)
+
     def __enter__(self) -> Self:
         self.start()
         return self

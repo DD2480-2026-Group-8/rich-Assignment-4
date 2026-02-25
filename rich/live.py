@@ -83,6 +83,7 @@ class Live(JupyterMixin, RenderHook):
         self.ipy_widget: Optional[Any] = None
         self.auto_refresh = auto_refresh
         self._started: bool = False
+        self._paused: bool = False
         self.transient = True if screen else transient
 
         self._refresh_thread: Optional[_RefreshThread] = None
@@ -179,6 +180,28 @@ class Live(JupyterMixin, RenderHook):
                         self.console.control(self._live_render.restore_cursor())
                     if self.ipy_widget is not None and self.transient:
                         self.ipy_widget.close()  # pragma: no cover
+    def pause(self) -> None:
+        """Pause auto-refresh without clearing the display."""
+        with self._lock:
+            if not self._started or self._paused:
+                return
+            self._paused = True
+            if self.auto_refresh and self._refresh_thread is not None:
+                self._refresh_thread.stop()
+                self._refresh_thread = None
+
+    def resume(self, refresh: bool = True) -> None:
+        """Resume auto-refresh after pause."""
+        with self._lock:
+            if not self._started or not self._paused:
+                return
+            self._paused = False
+            if self.auto_refresh and self._refresh_thread is None:
+                self._refresh_thread = _RefreshThread(self, self.refresh_per_second)
+                self._refresh_thread.start()
+
+        if refresh:
+            self.refresh()
 
     def __enter__(self) -> Self:
         self.start(refresh=self._renderable is not None)
