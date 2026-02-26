@@ -97,8 +97,6 @@ Summary in one or two sentences: When using `Progress` with `transient=True` and
 
 Scope (functionality and code affected). `rich/live.py` (Live), `rich/live_render.py` (LiveRender), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress; `LiveRender._shape` reset logic.
 
-## Architecture and purpose of the system (P+ overview)
-
 ## Requirements for the new feature or requirements affected by functionality being refactored
 
 Optional (point 3): trace tests to requirements.
