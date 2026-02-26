@@ -89,11 +89,11 @@ No dependency took more than 30 minutes. Poetry and all 25 project packages via 
 
 ## Overview of issue(s) and work done.
 
-Title: [BUG] Progress with multiple tasks and transient will delete written lines on stop() and start(). After discussion with the maintainer, we decided to add a new `pause()` and `resume()`, making the issue a feature request.
+Title: [BUG] Progress with multiple tasks and transient will delete written lines on stop() and start()
 
 URL: https://github.com/Textualize/rich/issues/3121
 
-Summary in one or two sentences: When using `Progress` with `transient=True` and multiple tasks, calling `stop()` and then `start()` deletes previously printed lines from the terminal. The maintainer clarified that `stop()` was never designed for pause/restart; the solution is to add a new `pause()` and `resume()`.
+Summary in one or two sentences: When using `Progress` with `transient=True` and multiple tasks, calling `stop()` and then `start()` deletes previously printed lines from the terminal. The maintainer clarified that `stop()` was never designed for pause/restart; the solution is to add a new `pause()` and `resume()`, making the issue a feature request.
 
 Scope (functionality and code affected). `rich/live.py` (Live), `rich/live_render.py` (LiveRender), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress; `LiveRender._shape` reset logic.
 
