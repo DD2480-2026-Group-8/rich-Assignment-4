@@ -29,10 +29,45 @@ def test_live_state() -> None:
         assert live.get_renderable() == ""
 
         assert live._started
+        live.pause()
+        assert live._paused and live._started
+        live.resume()
+        assert live._started and not live._paused
         live.stop()
         assert not live._started
 
     assert not live._started
+
+def test_paused_resumed_refresh_thread() -> None:
+     with Live("", auto_refresh= True) as live:
+        live.start()
+        live.pause()
+        assert live._refresh_thread is None
+        live.resume()
+        assert live._refresh_thread is not None
+        live.stop()
+        
+
+def test_pause_resume_twice() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False) as live:
+        live.start()
+        live.pause()
+        live.pause()
+        assert live._paused
+        live.resume()
+        live.resume()
+        assert not live._paused and live._started
+
+def test_stop_after_pause() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False) as live:
+        live.start()
+        live.pause()
+        live.stop()
+        assert not live._started and not live._paused
 
 
 def test_growing_display() -> None:
