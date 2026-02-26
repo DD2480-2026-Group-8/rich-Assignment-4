@@ -21,17 +21,17 @@ We continued with the same project (Rich) from Assignment 3, so we already had f
 
 Since we already had experience from Assignment 3, setup was straightforward:
 
-1. **Clone the repository** (~1 min)
+1. **Clone the repository**
 
    ```
    git clone git@github.com:DD2480-2026-Group-8/rich-Assignment-4.git
    cd rich-Assignment-4
    ```
 
-2. **Install Poetry** (~1 min)
+2. **Install Poetry**
    Rich uses [Poetry](https://python-poetry.org/) for packaging and dependency management, as documented in `CONTRIBUTING.md`. We installed it with `pip3 install poetry`. Poetry version 2.3.2 was installed; Python 3.12.1 was already available.
 
-3. **Create virtual environment and install dependencies** (~1 min)
+3. **Create virtual environment and install dependencies**
 
    ```
    python3 -m venv .venv
@@ -41,7 +41,7 @@ Since we already had experience from Assignment 3, setup was straightforward:
 
    Poetry installed 25 packages (pytest, black, mypy, pygments, markdown-it-py, etc.) and the Rich project itself in editable mode. No errors or manual intervention required.
 
-4. **Run the test suite** (~10 s)
+4. **Run the test suite**
 
    ```
    TERM=unknown pytest tests/ -v --tb=short
@@ -49,7 +49,7 @@ Since we already had experience from Assignment 3, setup was straightforward:
 
    Result: **952 passed, 25 skipped** in 5.5 seconds. All 25 skips are platform-specific (Windows-only tests) or optional-dependency tests. No failures.
 
-5. **Run tests with coverage** (~10 s)
+5. **Run tests with coverage**
    ```
    pytest tests/ --cov=rich --cov-report=term-missing -q
    ```
@@ -67,103 +67,19 @@ The project already has a GitHub Actions workflow (`.github/workflows/pythonpack
 
 ## Effort spent
 
-For each team member, how much time was spent in
+For each team member, time spent (in hours) per activity:
 
-1. plenary discussions/meetings;
-
-- Filip: Approx 3 hours understanding the project. Includes discussions with the group if we should continue with the same project, looking for suitable issue and discussing the approach.
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-2. discussions within parts of the group;
-
-- Filip:
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-3. reading documentation;
-
-- Filip: Spending approx 1 hour on the documentation. We had the same repo as Assignment 3, but was making sure that we could use similar approach.
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-4. configuration and setup;
-
-- Filip:
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-5. analyzing code/output;
-
-- Filip:
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-6. writing documentation;
-
-- Filip:
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-7. writing code;
-
-- Filip:
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
-
-8. running code?
-
-- Filip:
-
-- Anna:
-
-- Jingze:
-
-- Louisa:
-
-- Erik:
+| Activity                        | Filip | Anna | Jingze | Louisa | Erik | **Total** |
+| ------------------------------- | ----- | ---- | ------ | ------ | ---- | --------- |
+| 1. Plenary discussions/meetings |       |      |        |        |      |           |
+| 2. Discussions within subgroup  |       |      |        |        |      |           |
+| 3. Reading documentation        |       |      |        |        |      |           |
+| 4. Configuration and setup      |       |      |        |        |      |           |
+| 5. Analyzing code/output        |       |      |        |        |      |           |
+| 6. Writing documentation        |       |      |        |        |      |           |
+| 7. Writing code                 |       |      |        |        |      |           |
+| 8. Running code                 |       |      |        |        |      |           |
+| **Per-person total**            |       |      |        |        |      |           |
 
 For setting up tools and libraries (step 4), enumerate all dependencies
 you took care of and where you spent your time, if that time exceeds
@@ -173,17 +89,26 @@ No dependency took more than 30 minutes. Poetry and all 25 project packages via 
 
 ## Overview of issue(s) and work done.
 
-Title:
+Title: [BUG] Progress with multiple tasks and transient will delete written lines on stop() and start(). After discussion with the maintainer, we decided to add a new `pause()` and `resume()`, making the issue a feature request.
 
-URL:
+URL: https://github.com/Textualize/rich/issues/3121
 
-Summary in one or two sentences
+Summary in one or two sentences: When using `Progress` with `transient=True` and multiple tasks, calling `stop()` and then `start()` deletes previously printed lines from the terminal. The maintainer clarified that `stop()` was never designed for pause/restart; the solution is to add a new `pause()` and `resume()`.
 
-Scope (functionality and code affected).
+Scope (functionality and code affected). `rich/live.py` (Live), `rich/live_render.py` (LiveRender), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress; `LiveRender._shape` reset logic.
+
+## Architecture and purpose of the system (P+ overview)
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
 
 Optional (point 3): trace tests to requirements.
+| ID | Title | Description |
+| ----- | ---------------------------------- | ------------------------------------------------------------------------ |
+| REQ-1 | Transient progress clears on pause | When paused, progress bar lines are erased from the terminal. |
+| REQ-2 | Resume preserves prior output | Lines printed before `pause()` must not be overwritten after `resume()`. |
+| REQ-3 | Restart renders correctly | After `resume()`, progress bars render at the correct position. |
+| REQ-4 | Safe to call pause/resume twice | Calling `pause()` when already paused, or `resume()` when already showing, must do nothing and not crash. |
+| REQ-5 | Non-transient unaffected | Behavior for `transient=False` unchanged. |
 
 ## Code changes
 
@@ -205,6 +130,8 @@ refactoring).
 ## UML class diagram and its description
 
 ### Key changes/classes affected
+
+![UML diagram](uml.png)
 
 Optional (point 1): Architectural overview.
 
