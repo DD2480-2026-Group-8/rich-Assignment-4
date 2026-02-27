@@ -180,15 +180,40 @@ class Live(JupyterMixin, RenderHook):
                         self.console.control(self._live_render.restore_cursor())
                     if self.ipy_widget is not None and self.transient:
                         self.ipy_widget.close()  # pragma: no cover
+    
     def pause(self) -> None:
         """Pause auto-refresh without clearing the display."""
         with self._lock:
             if not self._started or self._paused:
                 return
             self._paused = True
+
+            # stop refreshing
             if self.auto_refresh and self._refresh_thread is not None:
                 self._refresh_thread.stop()
                 self._refresh_thread = None
+
+            if self._nested:
+                return
+
+            with self.console:
+                self._disable_redirect_io()
+                self.console.pop_render_hook()
+                self.console.clear_live()
+
+                # if transient, clear the lines
+                if self.transient and not self._alt_screen and not self.console.is_jupyter:
+                    if self.console.is_terminal and not self.console.is_dumb_terminal:
+                        
+                        if self._live_render.last_render_height:
+                            self.console.line()
+
+                        self.console.control(self._live_render.restore_cursor())
+                        
+                        # clear _shape
+                        self._live_render._shape = None
+
+                self.console.show_cursor(True)
 
     def resume(self, refresh: bool = True) -> None:
         """Resume auto-refresh after pause."""
@@ -196,6 +221,15 @@ class Live(JupyterMixin, RenderHook):
             if not self._started or not self._paused:
                 return
             self._paused = False
+
+            if not self.console.set_live(self):
+                self._nested = True
+                return
+
+            self.console.show_cursor(False)
+            self._enable_redirect_io()
+            self.console.push_render_hook(self)
+
             if self.auto_refresh and self._refresh_thread is None:
                 self._refresh_thread = _RefreshThread(self, self.refresh_per_second)
                 self._refresh_thread.start()
