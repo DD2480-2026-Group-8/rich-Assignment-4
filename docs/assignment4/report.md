@@ -163,28 +163,30 @@ The following diagram summarises the main components and data flow:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           RICH ARCHITECTURE                                 │
+│                         RICH ARCHITECTURE                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  User code                                                                  │
-│       │                                                                     │
-│       ▼                                                                     │
-│  ┌──────────┐     renderables      ┌─────────────┐     segments             │
-│  │ Progress │ ──────────────────► │   Console   │ ◄─────────────────────    │
-│  │  Table   │     (__rich_console__) │  (print)   │     (text + style)      │
-│  │  Live    │                      └──────┬──────┘                          │
-│  └──────────┘                             │                                 │
-│       │                                    │ ANSI codes                     │
-│       │  Live display path                  ▼                               │
-│       ▼                            ┌─────────────┐                          │
-│  ┌──────────┐   render hook        │   stdout /  │                          │
-│  │   Live   │ ◄─────────────────── │   terminal  │                          │
-│  └────┬─────┘   (process_renderables) └─────────────┘                       │
-│       │                                                                     │
-│       ▼                                                                     │
-│  ┌──────────────┐   Control (cursor up, erase)                              │
-│  │  LiveRender  │ ─────────────────────────────────► ANSI output            │
-│  │  (_shape)    │                                                           │
-│  └──────────────┘                                                           │
+│                                                                             │
+│   User code                                                                 │
+│        │                                                                    │
+│        ▼                                                                    │
+│   ┌──────────┐   renderables    ┌─────────────┐   segments                  │
+│   │ Progress │ ───────────────► │   Console   │ ◄────────── (text+style)    │
+│   │  Table   │  __rich_console__│   (print)   │                             │
+│   │  Live    │                  └──────┬──────┘                             │
+│   └──────────┘                         │                                    │
+│        │                               │ ANSI codes                         │
+│        │ Live path                     ▼                                    │
+│        ▼                       ┌─────────────┐                              │
+│   ┌──────────┐  render hook    │  stdout /   │                              │
+│   │   Live   │ ◄───────────────│  terminal   │                              │
+│   └────┬─────┘ process_render  └─────────────┘                              │
+│        │                                                                    │
+│        ▼                                                                    │
+│   ┌──────────────┐  Control (cursor up, erase)                              │
+│   │  LiveRender  │ ───────────────────────────► ANSI output                 │
+│   │  (_shape)    │                                                          │
+│   └──────────────┘                                                          │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
