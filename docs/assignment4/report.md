@@ -139,7 +139,7 @@ Rich is a Python library for rich text and beautiful formatting in the terminal.
 
 ### Core abstraction: renderables
 
-The central abstraction in Rich is the **renderable**. Any object that can be displayed implements `__rich_console__()`, which receives a `Console` and `ConsoleOptions` and yields **segments** — pieces of text plus optional style (colour, bold, etc.). Strings, `Text`, `Table`, `Panel`, and `Progress` are all renderables. The `Console` class is the main entry point: it receives renderables, resolves them to segments, applies styles, and writes ANSI escape sequences to the output stream (stdout, a file, or a buffer).
+The central abstraction in Rich is the **renderable**. Any object that can be displayed implements `__rich_console__()`, which receives a `Console` and `ConsoleOptions` and yields **segments**, pieces of text plus optional style (colour, bold, etc.). Strings, `Text`, `Table`, `Panel`, and `Progress` are all renderables. The `Console` class is the main entry point: it receives renderables, resolves them to segments, applies styles, and writes ANSI escape sequences to the output stream (stdout, a file, or a buffer).
 
 ### Rendering pipeline
 
@@ -165,26 +165,26 @@ The following diagram summarises the main components and data flow:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                           RICH ARCHITECTURE                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  User code                                                                 │
-│       │                                                                    │
-│       ▼                                                                    │
-│  ┌──────────┐     renderables      ┌─────────────┐     segments           │
-│  │ Progress │ ──────────────────► │   Console   │ ◄───────────────────── │
-│  │  Table   │     (__rich_console__) │  (print)   │     (text + style)     │
-│  │  Live    │                      └──────┬──────┘                         │
-│  └──────────┘                             │                                │
+│  User code                                                                  │
+│       │                                                                     │
+│       ▼                                                                     │
+│  ┌──────────┐     renderables      ┌─────────────┐     segments             │
+│  │ Progress │ ──────────────────► │   Console   │ ◄─────────────────────    │
+│  │  Table   │     (__rich_console__) │  (print)   │     (text + style)      │
+│  │  Live    │                      └──────┬──────┘                          │
+│  └──────────┘                             │                                 │
 │       │                                    │ ANSI codes                     │
-│       │  Live display path                  ▼                                │
-│       ▼                            ┌─────────────┐                         │
-│  ┌──────────┐   render hook        │   stdout /  │                         │
-│  │   Live   │ ◄─────────────────── │   terminal  │                         │
-│  └────┬─────┘   (process_renderables) └─────────────┘                         │
-│       │                                                                    │
-│       ▼                                                                    │
-│  ┌──────────────┐   Control (cursor up, erase)                             │
-│  │  LiveRender  │ ─────────────────────────────────► ANSI output           │
-│  │  (_shape)    │                                                          │
-│  └──────────────┘                                                          │
+│       │  Live display path                  ▼                               │
+│       ▼                            ┌─────────────┐                          │
+│  ┌──────────┐   render hook        │   stdout /  │                          │
+│  │   Live   │ ◄─────────────────── │   terminal  │                          │
+│  └────┬─────┘   (process_renderables) └─────────────┘                       │
+│       │                                                                     │
+│       ▼                                                                     │
+│  ┌──────────────┐   Control (cursor up, erase)                              │
+│  │  LiveRender  │ ─────────────────────────────────► ANSI output            │
+│  │  (_shape)    │                                                           │
+│  └──────────────┘                                                           │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
