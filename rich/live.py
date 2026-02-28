@@ -183,7 +183,7 @@ class Live(JupyterMixin, RenderHook):
                         self.console.control(self._live_render.restore_cursor())
                     if self.ipy_widget is not None and self.transient:
                         self.ipy_widget.close()  # pragma: no cover
-    
+
     def pause(self) -> None:
         """Pause auto-refresh without clearing the display."""
         with self._lock:
@@ -205,14 +205,18 @@ class Live(JupyterMixin, RenderHook):
                 self.console.clear_live()
 
                 # if transient, clear the lines
-                if self.transient and not self._alt_screen and not self.console.is_jupyter:
+                if (
+                    self.transient
+                    and not self._alt_screen
+                    and not self.console.is_jupyter
+                ):
                     if self.console.is_terminal and not self.console.is_dumb_terminal:
-                        
+
                         if self._live_render.last_render_height:
                             self.console.line()
 
                         self.console.control(self._live_render.restore_cursor())
-                        
+
                         # clear _shape
                         self._live_render._shape = None
 
