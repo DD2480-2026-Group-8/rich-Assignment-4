@@ -1,4 +1,5 @@
 """Lite simulation of the top linux command."""
+
 import datetime
 import random
 import time
