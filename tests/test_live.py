@@ -29,11 +29,101 @@ def test_live_state() -> None:
         assert live.get_renderable() == ""
 
         assert live._started
+        live.pause()
+        assert live._paused and live._started
+        live.resume()
+        assert live._started and not live._paused
         live.stop()
         assert not live._started
 
     assert not live._started
 
+def test_paused_resumed_refresh_thread() -> None:
+     with Live("", auto_refresh= True) as live:
+        live.start()
+        live.pause()
+        assert live._refresh_thread is None
+        live.resume()
+        assert live._refresh_thread is not None
+        live.stop()
+        
+
+def test_pause_resume_twice() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False) as live:
+        live.start()
+        live.pause()
+        live.pause()
+        assert live._paused
+        live.resume()
+        live.resume()
+        assert not live._paused and live._started
+
+def test_stop_after_pause() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False) as live:
+        live.start()
+        live.pause()
+        live.stop()
+        assert not live._started and not live._paused
+
+def test_pause_resume_transient_clears_display() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False, transient=True) as live:
+        live.update("Some content", refresh=True)
+        console.end_capture()  # discard the render output
+        console.begin_capture()  # start fresh
+        live.pause()
+        output_at_pause = console.end_capture()
+        assert live._live_render._shape is None
+        # restore cursor sequence should be present
+        assert "\x1b[1A" in output_at_pause  # cursor moved up
+        assert "\x1b[2K" in output_at_pause  # line cleared
+        assert len(live.console._render_hooks) == 0 # render hooks should be cleared
+        console.begin_capture()  # start again to check resume
+        live.resume()
+        output_at_resume = console.end_capture()
+        assert "\x1b[?25l" in output_at_resume  # cursor hidden
+        assert len(live.console._render_hooks) > 0 # render hooks should be re-added on resume
+
+def test_pause_non_transient() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False, transient=False) as live:
+        live.update("Some content", refresh=True)
+        console.end_capture()  # discard the render output
+        console.begin_capture()  # start fresh
+        live.pause()
+        output_at_pause = console.end_capture()
+    # restore cursor should be skipped for non-transient
+    assert output_at_pause == "\x1b[?25h" 
+
+def test_pause_transient_alt() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, screen = True, auto_refresh=False, transient=True) as live:
+        live.update("Some content", refresh=True)
+        console.end_capture()  # discard the render output
+        console.begin_capture()  # start fresh
+        live.pause()
+        output_at_pause = console.end_capture()
+    # restore cursor should be skipped for alt screen
+    assert output_at_pause == "\x1b[?25h" 
+
+def test_pause_transient_jupyter() -> None:
+    with Console(force_jupyter=True) as console:
+        console.begin_capture()
+        with Live(console=console, auto_refresh=False, transient=True) as live:
+            live.update("Some content", refresh=True)
+            console.end_capture()  # discard the render output
+            console.begin_capture()  # start fresh
+            live.pause()
+            output_at_pause = console.end_capture()
+        # restore cursor should be skipped in Jupyter
+        assert output_at_pause == "\x1b[?25h"
 
 def test_growing_display() -> None:
     console = create_capture_console()
