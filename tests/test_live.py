@@ -122,8 +122,9 @@ def test_pause_transient_jupyter() -> None:
             console.begin_capture()  # start fresh
             live.pause()
             output_at_pause = console.end_capture()
-        # restore cursor should be skipped in Jupyter
-        assert output_at_pause == "\x1b[?25h"
+            # restore cursor should be skipped in Jupyter
+            assert output_at_pause == ""
+            assert live._paused is True
 
 def test_growing_display() -> None:
     console = create_capture_console()

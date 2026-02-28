@@ -149,7 +149,8 @@ class Live(JupyterMixin, RenderHook):
             if not self._started:
                 return
             self._started = False
-            self.console.clear_live()
+            if not self._paused:
+                self.console.clear_live()
             if self._nested:
                 if not self.transient:
                     self.console.print(self.renderable)
@@ -165,8 +166,10 @@ class Live(JupyterMixin, RenderHook):
                     if not self._alt_screen and not self.console.is_jupyter:
                         self.refresh()
                 finally:
-                    self._disable_redirect_io()
-                    self.console.pop_render_hook()
+                    if not self._paused:
+                        self._disable_redirect_io()
+                        self.console.pop_render_hook()
+                    self._paused = False
                     if (
                         not self._alt_screen
                         and self.console.is_terminal
