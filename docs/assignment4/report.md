@@ -95,7 +95,7 @@ URL: https://github.com/Textualize/rich/issues/3121
 
 Summary in one or two sentences: When using `Progress` with `transient=True` and multiple tasks, calling `stop()` and then `start()` deletes previously printed lines from the terminal. The maintainer clarified that `stop()` was never designed for pause/restart; the solution is to add a new `pause()` and `resume()`, making the issue a feature request.
 
-Scope (functionality and code affected). `rich/live.py` (Live), `rich/live_render.py` (LiveRender), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress; `LiveRender._shape` reset logic.
+Scope (functionality and code affected). `rich/live.py` (Live), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress. In `pause()`, we reset `LiveRender._shape` (no changes to `live_render.py` itself).
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
 
@@ -192,7 +192,7 @@ The following diagram summarises the main components and data flow:
 
 Optional (point 2): relation to design pattern(s).
 
-Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()` hides the progress bars (like transient stop) and resets `_shape`, but keeps the render hook and refresh thread active. `resume()` triggers a refresh so the bars reappear at the current cursor position. This supports the use case of temporarily hiding progress for user input (e.g. a prompt) and then resuming.
+Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()` hides the progress bars (like transient stop): it removes the render hook, stops the refresh thread, clears the display (if transient), and resets `_shape`. `resume()` re-adds the render hook, restarts the refresh thread, and triggers a refresh so the bars reappear at the current cursor position. This supports the use case of temporarily hiding progress for user input (e.g. a prompt) and then resuming.
 
 ## Overall experience
 
