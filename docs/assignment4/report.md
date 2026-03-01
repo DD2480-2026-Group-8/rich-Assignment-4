@@ -95,7 +95,7 @@ URL: https://github.com/Textualize/rich/issues/3121
 
 Summary in one or two sentences: When using `Progress` with `transient=True` and multiple tasks, calling `stop()` and then `start()` deletes previously printed lines from the terminal. The maintainer clarified that `stop()` was never designed for pause/restart; the solution is to add a new `pause()` and `resume()`, making the issue a feature request.
 
-Scope (functionality and code affected). `rich/live.py` (Live), `rich/live_render.py` (LiveRender), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress; `LiveRender._shape` reset logic.
+Scope (functionality and code affected). `rich/live.py` (Live), `rich/progress.py` (Progress). New methods `pause()` and `resume()` on Live and Progress. In `pause()`, we reset `LiveRender._shape` (no changes to `live_render.py` itself).
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
 
@@ -112,19 +112,61 @@ Optional (point 3): trace tests to requirements.
 
 ### Patch
 
-(copy your changes or the add git command to show them)
+Three files were modified:
 
-git diff ...
+- `rich/live.py`
+
+- `rich/progress.py`
+
+- `tests/test_live.py `
+
+The primary changes include:
+
+- Adding new `pause()` and `resume()` functions
+
+- Making minor adjustments to the existing `stop()` method
+- Adding tests
+
+The patch was generated using:
+
+```bash
+git diff e90abf9 HEAD -- rich/live.py
+git diff e90abf9 HEAD -- rich/progress.py
+git diff e90abf9 HEAD -- tests/test_live.py
+```
 
 Optional (point 4): the patch is clean.
-
-Optional (point 5): considered for acceptance (passes all automated checks).
+(a) We add new code rather than refactor; there is no obsolete code to remove or comment out. (b) The patch produces no extraneous output such as debug prints. (c) All code is formatted with Black (the project standard); we run `poetry run black .` before committing, so there are no unnecessary whitespace changes. Black formatting is required for CI to pass (the format-check step fails otherwise), so the patch is consistent with the project’s style and passes all automated checks when merged into master.
 
 ## Test results
 
-Overall results with link to a copy or excerpt of the logs (before/after
-refactoring).
+A total of nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now. 
 
+All outlined requirements have a test associated with it.
+
+| Test                                              | REQ-1 | REQ-2 | REQ-3 | REQ-4 | REQ-5 |
+| ------------------------------------------------- | ----- | ----- | ----- | ----- | ----- |
+| `test_live_state`                                 |       |       |       | ✓     |       |
+| `test_paused_resumed_refresh_thread`              |       |       |       |       |       |
+| `test_pause_resume_twice`                         |       |       |       | ✓     |       |
+| `test_stop_after_pause`                           |       |       |       |       |       |
+| `test_pause_resume_transient_clears_display`      | ✓     |       | ✓     |       |       |
+| `test_pause_non_transient`                        |       |       |       |       | ✓     |
+| `test_pause_transient_alt`                        | ✓     |       |       |       |       |
+| `test_pause_transient_jupyter`                    | ✓     |       |       |       |       |
+| `test_resume_preserves_prior_output`              |       | ✓     |       |       |       |
+
+```python
+tests/test_live.py::test_live_state PASSED
+tests/test_live.py::test_paused_resumed_refresh_thread PASSED  
+tests/test_live.py::test_pause_resume_twice PASSED
+tests/test_live.py::test_stop_after_pause PASSED           
+tests/test_live.py::test_pause_resume_transient_clears_display PASSED 
+tests/test_live.py::test_pause_non_transient PASSED            
+tests/test_live.py::test_pause_transient_alt PASSED          
+tests/test_live.py::test_pause_transient_jupyter PASSED          
+tests/test_live.py::test_resume_preserves_prior_output PASSED  
+```
 ## UML class diagram and its description
 
 ### Key changes/classes affected
@@ -192,7 +234,7 @@ The following diagram summarises the main components and data flow:
 
 Optional (point 2): relation to design pattern(s).
 
-Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()` hides the progress bars (like transient stop) and resets `_shape`, but keeps the render hook and refresh thread active. `resume()` triggers a refresh so the bars reappear at the current cursor position. This supports the use case of temporarily hiding progress for user input (e.g. a prompt) and then resuming.
+Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()` hides the progress bars (like transient stop): it removes the render hook, stops the refresh thread, clears the display (if transient), and resets `_shape`. `resume()` re-adds the render hook, restarts the refresh thread, and triggers a refresh so the bars reappear at the current cursor position. This supports the use case of temporarily hiding progress for user input (e.g. a prompt) and then resuming.
 
 ## Overall experience
 
