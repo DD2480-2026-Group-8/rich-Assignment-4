@@ -155,17 +155,17 @@ All outlined requirements have a test associated with it.
 | `test_pause_transient_jupyter`                    | ✓     |       |       |       |       |
 | `test_resume_preserves_prior_output`              |       | ✓     |       |       |       |
 
-
-tests/test_live.py::test_live_state **PASSED**   
-tests/test_live.py::test_paused_resumed_refresh_thread **PASSED**  
-tests/test_live.py::test_pause_resume_twice **PASSED**    
-tests/test_live.py::test_stop_after_pause **PASSED**             
-tests/test_live.py::test_pause_resume_transient_clears_display **PASSED**   
-tests/test_live.py::test_pause_non_transient **PASSED**             
-tests/test_live.py::test_pause_transient_alt **PASSED**            
-tests/test_live.py::test_pause_transient_jupyter **PASSED**          
-tests/test_live.py::test_resume_preserves_prior_output **PASSED**  
-
+```python
+tests/test_live.py::test_live_state PASSED
+tests/test_live.py::test_paused_resumed_refresh_thread PASSED  
+tests/test_live.py::test_pause_resume_twice PASSED
+tests/test_live.py::test_stop_after_pause PASSED           
+tests/test_live.py::test_pause_resume_transient_clears_display PASSED 
+tests/test_live.py::test_pause_non_transient PASSED            
+tests/test_live.py::test_pause_transient_alt PASSED          
+tests/test_live.py::test_pause_transient_jupyter PASSED          
+tests/test_live.py::test_resume_preserves_prior_output PASSED  
+```
 ## UML class diagram and its description
 
 ### Key changes/classes affected
