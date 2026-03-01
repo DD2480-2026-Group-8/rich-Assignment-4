@@ -114,28 +114,29 @@ Optional (point 3): trace tests to requirements.
 
 Three files were modified:
 
--   `rich/live.py`
+- `rich/live.py`
 
--   `rich/progress.py`
+- `rich/progress.py`
 
--   `tests/test_live.py ` 
+- `tests/test_live.py `
 
 The primary changes include:
 
--   Adding new `pause()` and `resume()` functions
+- Adding new `pause()` and `resume()` functions
 
--   Making minor adjustments to the existing `stop()` method 
--   Adding tests
+- Making minor adjustments to the existing `stop()` method
+- Adding tests
 
 The patch was generated using:
 
 ```bash
-git diff e90abf9 HEAD -- rich/live.py 
-git diff e90abf9 HEAD -- rich/progress.py 
-git diff e90abf9 HEAD -- tests/test_live.py 
+git diff e90abf9 HEAD -- rich/live.py
+git diff e90abf9 HEAD -- rich/progress.py
+git diff e90abf9 HEAD -- tests/test_live.py
 ```
 
 Optional (point 4): the patch is clean.
+(a) We add new code rather than refactor; there is no obsolete code to remove or comment out. (b) The patch produces no extraneous output such as debug prints. (c) All code is formatted with Black (the project standard); we run `poetry run black .` before committing, so there are no unnecessary whitespace changes. Black formatting is required for CI to pass (the format-check step fails otherwise), so the patch is consistent with the project’s style and passes all automated checks when merged into master.
 
 ## Test results
 
