@@ -71,15 +71,15 @@ For each team member, time spent (in hours) per activity:
 
 | Activity                        | Filip | Anna | Jingze | Louisa | Erik | **Total** |
 | ------------------------------- | ----- | ---- | ------ | ------ | ---- | --------- |
-| 1. Plenary discussions/meetings |       |      |        |        |      |           |
-| 2. Discussions within subgroup  |       |      |        |        |      |           |
-| 3. Reading documentation        |       |      |        |        |      |           |
-| 4. Configuration and setup      |       |      |        |        |      |           |
-| 5. Analyzing code/output        |       |      |        |        |      |           |
-| 6. Writing documentation        |       |      |        |        |      |           |
-| 7. Writing code                 |       |      |        |        |      |           |
-| 8. Running code                 |       |      |        |        |      |           |
-| **Per-person total**            |       |      |        |        |      |           |
+| 1. Plenary discussions/meetings |       |    2 |        |        |      |           |
+| 2. Discussions within subgroup  |       |    1 |        |        |      |           |
+| 3. Reading documentation        |       |    1 |        |        |      |           |
+| 4. Configuration and setup      |       |  0.5 |        |        |      |           |
+| 5. Analyzing code/output        |       |    2 |        |        |      |           |
+| 6. Writing documentation        |       |    1 |        |        |      |           |
+| 7. Writing code                 |       |    7 |        |        |      |           |
+| 8. Running code                 |       |  0.5 |        |        |      |           |
+| **Per-person total**            |       |   15 |        |        |      |           |
 
 For setting up tools and libraries (step 4), enumerate all dependencies
 you took care of and where you spent your time, if that time exceeds
@@ -139,8 +139,32 @@ Optional (point 4): the patch is clean.
 
 ## Test results
 
-Overall results with link to a copy or excerpt of the logs (before/after
-refactoring).
+A total of nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now. 
+
+All outlined requirements have a test associated with it.
+
+| Test                                              | REQ-1 | REQ-2 | REQ-3 | REQ-4 | REQ-5 |
+| ------------------------------------------------- | ----- | ----- | ----- | ----- | ----- |
+| `test_live_state`                                 |       |       |       | ✓     |       |
+| `test_paused_resumed_refresh_thread`              |       |       |       |       |       |
+| `test_pause_resume_twice`                         |       |       |       | ✓     |       |
+| `test_stop_after_pause`                           |       |       |       |       |       |
+| `test_pause_resume_transient_clears_display`      | ✓     |       | ✓     |       |       |
+| `test_pause_non_transient`                        |       |       |       |       | ✓     |
+| `test_pause_transient_alt`                        | ✓     |       |       |       |       |
+| `test_pause_transient_jupyter`                    | ✓     |       |       |       |       |
+| `test_resume_preserves_prior_output`              |       | ✓     |       |       |       |
+
+
+tests/test_live.py::test_live_state **PASSED**   
+tests/test_live.py::test_paused_resumed_refresh_thread **PASSED**  
+tests/test_live.py::test_pause_resume_twice **PASSED**    
+tests/test_live.py::test_stop_after_pause **PASSED**             
+tests/test_live.py::test_pause_resume_transient_clears_display **PASSED**   
+tests/test_live.py::test_pause_non_transient **PASSED**             
+tests/test_live.py::test_pause_transient_alt **PASSED**            
+tests/test_live.py::test_pause_transient_jupyter **PASSED**          
+tests/test_live.py::test_resume_preserves_prior_output **PASSED**  
 
 ## UML class diagram and its description
 
