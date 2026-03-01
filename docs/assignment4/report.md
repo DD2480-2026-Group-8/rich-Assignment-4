@@ -71,15 +71,15 @@ For each team member, time spent (in hours) per activity:
 
 | Activity                        | Filip | Anna | Jingze | Louisa | Erik | **Total** |
 | ------------------------------- | ----- | ---- | ------ | ------ | ---- | --------- |
-| 1. Plenary discussions/meetings |       |      |        |        |  2    |           |
-| 2. Discussions within subgroup  |       |      |        |        |  1    |           |
-| 3. Reading documentation        |       |      |        |        |  2    |           |
-| 4. Configuration and setup      |       |      |        |        |  3    |           |
-| 5. Analyzing code/output        |       |      |        |        |  2    |           |
-| 6. Writing documentation        |       |      |        |        |  2    |           |
-| 7. Writing code                 |       |      |        |        |  1    |           |
-| 8. Running code                 |       |      |        |        |  1    |           |
-| **Per-person total**            |       |      |        |        |  14    |           |
+| 1. Plenary discussions/meetings |       |      |        |        | 2    |           |
+| 2. Discussions within subgroup  |       |      |        |        | 1    |           |
+| 3. Reading documentation        |       |      |        |        | 2    |           |
+| 4. Configuration and setup      |       |      |        |        | 3    |           |
+| 5. Analyzing code/output        |       |      |        |        | 2    |           |
+| 6. Writing documentation        |       |      |        |        | 2    |           |
+| 7. Writing code                 |       |      |        |        | 1    |           |
+| 8. Running code                 |       |      |        |        | 1    |           |
+| **Per-person total**            |       |      |        |        | 14   |           |
 
 For setting up tools and libraries (step 4), enumerate all dependencies
 you took care of and where you spent your time, if that time exceeds
@@ -140,33 +140,34 @@ Optional (point 4): the patch is clean.
 
 ## Test results
 
-A total of nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now. 
+A total of nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now.
 
 All outlined requirements have a test associated with it.
 
-| Test                                              | REQ-1 | REQ-2 | REQ-3 | REQ-4 | REQ-5 |
-| ------------------------------------------------- | ----- | ----- | ----- | ----- | ----- |
-| `test_live_state`                                 |       |       |       | ✓     |       |
-| `test_paused_resumed_refresh_thread`              |       |       |       |       |       |
-| `test_pause_resume_twice`                         |       |       |       | ✓     |       |
-| `test_stop_after_pause`                           |       |       |       |       |       |
-| `test_pause_resume_transient_clears_display`      | ✓     |       | ✓     |       |       |
-| `test_pause_non_transient`                        |       |       |       |       | ✓     |
-| `test_pause_transient_alt`                        | ✓     |       |       |       |       |
-| `test_pause_transient_jupyter`                    | ✓     |       |       |       |       |
-| `test_resume_preserves_prior_output`              |       | ✓     |       |       |       |
+| Test                                         | REQ-1 | REQ-2 | REQ-3 | REQ-4 | REQ-5 |
+| -------------------------------------------- | ----- | ----- | ----- | ----- | ----- |
+| `test_live_state`                            |       |       |       | ✓     |       |
+| `test_paused_resumed_refresh_thread`         |       |       |       |       |       |
+| `test_pause_resume_twice`                    |       |       |       | ✓     |       |
+| `test_stop_after_pause`                      |       |       |       |       |       |
+| `test_pause_resume_transient_clears_display` | ✓     |       | ✓     |       |       |
+| `test_pause_non_transient`                   |       |       |       |       | ✓     |
+| `test_pause_transient_alt`                   | ✓     |       |       |       |       |
+| `test_pause_transient_jupyter`               | ✓     |       |       |       |       |
+| `test_resume_preserves_prior_output`         |       | ✓     |       |       |       |
 
 ```python
 tests/test_live.py::test_live_state PASSED
-tests/test_live.py::test_paused_resumed_refresh_thread PASSED  
+tests/test_live.py::test_paused_resumed_refresh_thread PASSED
 tests/test_live.py::test_pause_resume_twice PASSED
-tests/test_live.py::test_stop_after_pause PASSED           
-tests/test_live.py::test_pause_resume_transient_clears_display PASSED 
-tests/test_live.py::test_pause_non_transient PASSED            
-tests/test_live.py::test_pause_transient_alt PASSED          
-tests/test_live.py::test_pause_transient_jupyter PASSED          
-tests/test_live.py::test_resume_preserves_prior_output PASSED  
+tests/test_live.py::test_stop_after_pause PASSED
+tests/test_live.py::test_pause_resume_transient_clears_display PASSED
+tests/test_live.py::test_pause_non_transient PASSED
+tests/test_live.py::test_pause_transient_alt PASSED
+tests/test_live.py::test_pause_transient_jupyter PASSED
+tests/test_live.py::test_resume_preserves_prior_output PASSED
 ```
+
 ## UML class diagram and its description
 
 ### Key changes/classes affected
@@ -238,17 +239,17 @@ Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()
 
 ## Overall experience
 
-Main take aways from the project:
-Our main take-away was experience from working on a real open-source codebase such as Rich. Unlike the earlier assignments where we controlled the entire project, this project required understanding much code and architecture that had already been established and making our changes compatible with what already existed. 
-We also learned how it's important to clarify the entire design to avoid having design decisions be misinterpreted as bugs, which was clarified by the maintainer of the project. 
+Main take-aways from the project:
+Our main take-away was experience from working on a real open-source codebase such as Rich. Unlike the earlier assignments where we controlled the entire project, this project required understanding much code and architecture that had already been established and making our changes compatible with what already existed.
+We also learned how it's important to clarify the entire design to avoid having design decisions be misinterpreted as bugs, which was clarified by the maintainer of the project.
 
 Evaluation based on the essence standard:
-We have improved since the first assignments. Most of our “growth” happened during the first assignments. Initially our team started out in the formed stage. By assignment 2, we had clearly moved to the collaborating stage and the team was focused on achieving the objectives. 
-By assignment 3, the tight time frame caused some issues with coordination and splitting tasks, so our work alpha was not fully under control by the point. We focused on better planning by assignment 4 so the work alpha could be under control and then concluded. 
-During assignment 4 we also clearly went through the opportunity alphas, beginning with identifying an opportunity in the form of an issue, establishing the value of resolving the issue, deciding if it's viable and then addressing it. 
-Roles were clearly divided during all the assignments across the entire course.  We improved by making deadlines and individual progress more clear, which reduced some workflow issues we experienced during the earlier assignments.
+We have improved since the first assignments. Most of our “growth” happened during the first assignments. Initially our team started out in the formed stage. By assignment 2, we had clearly moved to the collaborating stage and the team was focused on achieving the objectives.
+By assignment 3, the tight time frame caused some issues with coordination and splitting tasks, so our work alpha was not fully under control by the point. We focused on better planning by assignment 4 so the work alpha could be under control and then concluded.
+During assignment 4 we also clearly went through the opportunity alphas, beginning with identifying an opportunity in the form of an issue, establishing the value of resolving the issue, deciding if it's viable and then addressing it.
+Roles were clearly divided during all the assignments across the entire course. We improved by making deadlines and individual progress more clear, which reduced some workflow issues we experienced during the earlier assignments.
 
-We found that one of the main benefits of using SEMAT to evaluate progress is the checklists, even though they are a bit abstract at times. 
+We found that one of the main benefits of using SEMAT to evaluate progress is the checklists, even though they are a bit abstract at times.
 
 Optional (point 6): How would you put your work in context with best software engineering practice?
 
