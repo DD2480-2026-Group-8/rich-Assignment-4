@@ -727,6 +727,38 @@ def test_pause_nothing_when_disabled() -> None:
     progress.pause()
     progress.live.pause.assert_not_called()
 
+def test_resume_live() -> None:
+    progress = make_mock_progress()
+    init_pause_resume(progress)
+    progress.resume()
+    progress.live.resume.assert_called_once_with(refresh=True)
+
+def test_resume_nothing_when_disabled() -> None:
+    progress = make_mock_progress(disable=True)
+    init_pause_resume(progress)
+    progress.resume()
+    progress.live.resume.assert_not_called()
+
+def test_pause_resume() -> None:
+    progress = make_mock_progress()
+    init_pause_resume(progress)
+    manager = MagicMock()
+    manager.attach_mock(progress.live.pause, "pause")
+    manager.attach_mock(progress.live.resume, "resume")
+    progress.pause()
+    progress.resume()
+    assert manager.mock_calls == [call.pause(), call.resume(refresh=True)]
+
+def test_pause_resume_state() -> None:
+    progress = make_mock_progress()
+    init_pause_resume(progress)
+    task_id = progress.add_task("foo", total=10, completed=5)
+    completed_before = progress._tasks[task_id].completed
+    progress.pause()
+    progress.resume()
+    assert progress._tasks[task_id].completed == completed_before
+    assert not progress._tasks[task_id].finished
+
 if __name__ == "__main__":
     _render = render_progress()
     print(_render)
