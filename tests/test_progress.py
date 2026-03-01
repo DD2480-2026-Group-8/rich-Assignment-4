@@ -3,7 +3,9 @@
 import io
 import os
 import tempfile
+import types
 from types import SimpleNamespace
+from unittest.mock import MagicMock, call
 
 import pytest
 
@@ -683,6 +685,47 @@ def test_task_progress_column_speed() -> None:
     speed_text = TaskProgressColumn.render_speed(8888888)
     assert speed_text.plain == "8.9×10⁶ it/s"
 
+
+def make_mock_progress(disable: bool = False) -> Progress:
+    console = Console(
+        file=io.StringIO(),
+        force_terminal=True,
+        color_system="truecolor",
+        width=80,
+        legacy_windows=False,
+        _environ={},
+    )
+    progress = Progress(console=console, auto_refresh=False, disable=disable)
+    mock_live = MagicMock()
+    mock_live.is_started = True
+    progress.live = mock_live
+    return progress
+
+
+def init_pause_resume(progress: Progress) -> None:
+    if not hasattr(progress, "pause"):
+        def pause(self) -> None:
+            if not self.disable:
+                self.live.pause()
+
+        def resume(self) -> None:
+            if not self.disable:
+                self.live.resume(refresh=True)
+
+        progress.pause = types.MethodType(pause, progress)
+        progress.resume = types.MethodType(resume, progress)
+
+def test_pause_live() -> None:
+    progress = make_mock_progress()
+    init_pause_resume(progress)
+    progress.pause()
+    progress.live.pause.assert_called_once_with()
+
+def test_pause_nothing_when_disabled() -> None:
+    progress = make_mock_progress(disable=True)
+    init_pause_resume(progress)
+    progress.pause()
+    progress.live.pause.assert_not_called()
 
 if __name__ == "__main__":
     _render = render_progress()
