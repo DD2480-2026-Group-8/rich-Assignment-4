@@ -71,15 +71,15 @@ For each team member, time spent (in hours) per activity:
 
 | Activity                        | Filip | Anna | Jingze | Louisa | Erik | **Total** |
 | ------------------------------- | ----- | ---- | ------ | ------ | ---- | --------- |
-| 1. Plenary discussions/meetings |       |      |        |        | 2    |           |
-| 2. Discussions within subgroup  |       |      |        |        | 1    |           |
-| 3. Reading documentation        |       |      |        |        | 2    |           |
-| 4. Configuration and setup      |       |      |        |        | 3    |           |
-| 5. Analyzing code/output        |       |      |        |        | 2    |           |
-| 6. Writing documentation        |       |      |        |        | 2    |           |
-| 7. Writing code                 |       |      |        |        | 1    |           |
-| 8. Running code                 |       |      |        |        | 1    |           |
-| **Per-person total**            |       |      |        |        | 14   |           |
+| 1. Plenary discussions/meetings |       |     2|        |        | 2    |           |
+| 2. Discussions within subgroup  |       |     1|        |        | 1    |           |
+| 3. Reading documentation        |       |     1|        |        | 2    |           |
+| 4. Configuration and setup      |       |   0.5|        |        | 3    |           |
+| 5. Analyzing code/output        |       |     2|        |        | 2    |           |
+| 6. Writing documentation        |       |     1|        |        | 2    |           |
+| 7. Writing code                 |       |     7|        |        | 1    |           |
+| 8. Running code                 |       |   0.5|        |        | 1    |           |
+| **Per-person total**            |       |    15|        |        | 14   |           |
 
 For setting up tools and libraries (step 4), enumerate all dependencies
 you took care of and where you spent your time, if that time exceeds
