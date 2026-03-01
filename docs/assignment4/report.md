@@ -112,13 +112,30 @@ Optional (point 3): trace tests to requirements.
 
 ### Patch
 
-(copy your changes or the add git command to show them)
+Three files were modified:
 
-git diff ...
+-   `rich/live.py`
+
+-   `rich/progress.py`
+
+-   `tests/test_live.py ` 
+
+The primary changes include:
+
+-   Adding new `pause()` and `resume()` functions
+
+-   Making minor adjustments to the existing `stop()` method 
+-   Adding tests
+
+The patch was generated using:
+
+```bash
+git diff e90abf9 HEAD -- rich/live.py 
+git diff e90abf9 HEAD -- rich/progress.py 
+git diff e90abf9 HEAD -- tests/test_live.py 
+```
 
 Optional (point 4): the patch is clean.
-
-Optional (point 5): considered for acceptance (passes all automated checks).
 
 ## Test results
 
