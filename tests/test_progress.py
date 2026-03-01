@@ -704,6 +704,7 @@ def make_mock_progress(disable: bool = False) -> Progress:
 
 def init_pause_resume(progress: Progress) -> None:
     if not hasattr(progress, "pause"):
+
         def pause(self) -> None:
             if not self.disable:
                 self.live.pause()
@@ -715,11 +716,13 @@ def init_pause_resume(progress: Progress) -> None:
         progress.pause = types.MethodType(pause, progress)
         progress.resume = types.MethodType(resume, progress)
 
+
 def test_pause_live() -> None:
     progress = make_mock_progress()
     init_pause_resume(progress)
     progress.pause()
     progress.live.pause.assert_called_once_with()
+
 
 def test_pause_nothing_when_disabled() -> None:
     progress = make_mock_progress(disable=True)
@@ -727,17 +730,20 @@ def test_pause_nothing_when_disabled() -> None:
     progress.pause()
     progress.live.pause.assert_not_called()
 
+
 def test_resume_live() -> None:
     progress = make_mock_progress()
     init_pause_resume(progress)
     progress.resume()
     progress.live.resume.assert_called_once_with(refresh=True)
 
+
 def test_resume_nothing_when_disabled() -> None:
     progress = make_mock_progress(disable=True)
     init_pause_resume(progress)
     progress.resume()
     progress.live.resume.assert_not_called()
+
 
 def test_pause_resume() -> None:
     progress = make_mock_progress()
@@ -749,6 +755,7 @@ def test_pause_resume() -> None:
     progress.resume()
     assert manager.mock_calls == [call.pause(), call.resume(refresh=True)]
 
+
 def test_pause_resume_state() -> None:
     progress = make_mock_progress()
     init_pause_resume(progress)
@@ -758,6 +765,7 @@ def test_pause_resume_state() -> None:
     progress.resume()
     assert progress._tasks[task_id].completed == completed_before
     assert not progress._tasks[task_id].finished
+
 
 if __name__ == "__main__":
     _render = render_progress()
