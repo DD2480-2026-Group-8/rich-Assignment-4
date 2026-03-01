@@ -134,6 +134,18 @@ def test_pause_transient_jupyter() -> None:
             assert output_at_pause == ""
             assert live._paused is True
 
+def test_resume_preserves_prior_output() -> None:
+    console = create_capture_console()
+    console.begin_capture()
+    with Live(console=console, auto_refresh=False, transient=True) as live:
+        console.print("Line printed before pause")
+        live.pause()
+        console.end_capture()
+        console.begin_capture()
+        live.resume(refresh=False) #no cursor movement 
+        output_at_resume = console.end_capture()
+    # resume does not overwrite prior output - only hides cursor
+    assert output_at_resume == "\x1b[?25l"
 
 def test_growing_display() -> None:
     console = create_capture_console()
