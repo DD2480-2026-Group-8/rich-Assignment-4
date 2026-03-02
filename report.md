@@ -83,13 +83,13 @@ For each team member, time spent (in hours) per activity:
 
 ### Contributions
 
-| Name   | GitHub username   |
-| ------ | ----------------- |
+| Name   | GitHub username      |
+| ------ | -------------------- |
 | Filip  | @FilipDimitrijevic97 |
-| Anna   | @annaLiksomething |
-| Jingze | @JingzeGuo        |
-| Louisa | @louisazhangg     |
-| Erik   | @eSirborg         |
+| Anna   | @annaLiksomething    |
+| Jingze | @JingzeGuo           |
+| Louisa | @louisazhangg        |
+| Erik   | @eSirborg            |
 
 For setting up tools and libraries (step 4), enumerate all dependencies
 you took care of and where you spent your time, if that time exceeds
@@ -181,6 +181,8 @@ tests/test_live.py::test_resume_preserves_prior_output PASSED
 ## UML class diagram and its description
 
 ### Key changes/classes affected
+
+**Summary of changes:** The diagram shows the five main classes involved in the Live display subsystem. Our contribution adds two new methods to both **Progress** and **Live**: `pause()` and `resume()` (marked `<<new>>` in the diagram). No new classes were introduced.
 
 ![UML diagram](uml.png)
 
