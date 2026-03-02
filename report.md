@@ -81,6 +81,16 @@ For each team member, time spent (in hours) per activity:
 | 8. Running code                 | 2     | 2    | 2      |        | 1    |
 | **Per-person total**            | 22    | 20   | 20     |        | 14   |
 
+### Contributions
+
+| Name   | GitHub username   |
+| ------ | ----------------- |
+| Filip  | @FilipDimitrijevic97 |
+| Anna   | @annaLiksomething |
+| Jingze | @JingzeGuo        |
+| Louisa | @louisazhangg     |
+| Erik   | @eSirborg         |
+
 For setting up tools and libraries (step 4), enumerate all dependencies
 you took care of and where you spent your time, if that time exceeds
 30 minutes:
