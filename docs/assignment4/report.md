@@ -253,4 +253,4 @@ We found that one of the main benefits of using SEMAT to evaluate progress is th
 
 Optional (point 6): How would you put your work in context with best software engineering practice?
 
-Optional (point 7): Is there something special you want to mention here?
+Optional (point 7): After picking an issue we got in contact with maintainer, who advised to approach the issue differently from what we hsve planned initially. We believe it exceeds the scope of the assignment.
