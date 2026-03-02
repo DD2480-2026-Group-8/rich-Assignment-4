@@ -110,13 +110,13 @@ Scope (functionality and code affected). `rich/live.py` (Live), `rich/progress.p
 ## Requirements for the new feature or requirements affected by functionality being refactored
 
 Optional (point 3): trace tests to requirements.
-| ID | Title | Description |
-| ----- | ---------------------------------- | ------------------------------------------------------------------------ |
-| REQ-1 | Transient progress clears on pause | When paused, progress bar lines are erased from the terminal. |
-| REQ-2 | Resume preserves prior output | Lines printed before `pause()` must not be overwritten after `resume()`. |
-| REQ-3 | Restart renders correctly | After `resume()`, progress bars render at the correct position. |
-| REQ-4 | Safe to call pause/resume twice | Calling `pause()` when already paused, or `resume()` when already showing, must do nothing and not crash. |
-| REQ-5 | Non-transient unaffected | Behavior for `transient=False` unchanged. |
+| ID          | Title                          | Description               | Set Up                 | Action           | Expected Outcome           |
+| ----------- | ------------------------------ | ------------------------- | ---------------------- | ---------------- | -------------------------- |
+| REQ-1 | Transient progress clears on pause | When paused, progress bar lines are erased from the terminal. | Create a terminal console, start a Live instance with `transient=True`, render some content with `update()`, discard render output | Call `pause()` | Output contains `\x1b[1A` (cursor up) and `\x1b[2K` (erase line), and `live._live_render._shape` is `None` | 
+| REQ-2 | Resume preserves prior output | Lines printed before `pause()` must not be overwritten after `resume()`. | Create a terminal console, start a Live instance with `transient=True`, print a line with `console.print()`, call `pause()`, discard output | Call `resume(refresh=False)` | Output is  `\x1b[?25l` — no cursor movement sequences, prior printed lines were not touched |
+| REQ-3 | Restart renders correctly | After `resume()`, progress bars render at the correct position. | Create a terminal console, start a Live instance with `transient=True`, render content, call `pause()`, discard output, start new capture | Call `resume()` | Output contains `\x1b[?25l` (cursor hidden) and render hooks are restored |
+| REQ-4 | Safe to call pause/resume twice | Calling `pause()` when already paused, or `resume()` when already showing, must do nothing and not crash. | Create a Live instance, start it | Call `pause()` twice, then `resume()` twice |  No exception is raised, `live._paused` is `False` and `live._started` is `True` after the double resume |
+| REQ-5 | Non-transient unaffected | Behavior for `transient=False` unchanged. | Create a terminal console, start a Live instance with `transient=False`, render some content, discard render output, start new capture | Call `pause()` |  Output is  `\x1b[?25h` - show cursor only |
 
 ## Code changes
 
@@ -145,14 +145,14 @@ git diff e90abf9 HEAD -- rich/progress.py
 git diff e90abf9 HEAD -- tests/test_live.py
 ```
 
-Optional (point 4): the patch is clean.
+## The patch is clean. (optional, P4)
 (a) We add new code rather than refactor; there is no obsolete code to remove or comment out. (b) The patch produces no extraneous output such as debug prints. (c) All code is formatted with Black (the project standard); we run `poetry run black .` before committing, so there are no unnecessary whitespace changes. Black formatting is required for CI to pass (the format-check step fails otherwise), so the patch is consistent with the project’s style and passes all automated checks when merged into master.
 
 ## Test results
 
 A total of nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now.
 
-All outlined requirements have a test associated with it.
+All outlined requirements have a test associated with it. REQ-1 is tested for alt screen and Jupyter as cursor restore must be skipped.  `test_paused_resumed_refresh_thread` while is not linked to one of the outlined requirements, checks the basic functionality of `pause()` and `resume()` making sure `refresh()` is not called during pause and is restored after resuming. The situation is similar with `test_stop_after_pause`
 
 | Test                                         | REQ-1 | REQ-2 | REQ-3 | REQ-4 | REQ-5 |
 | -------------------------------------------- | ----- | ----- | ----- | ----- | ----- |
