@@ -185,7 +185,7 @@ class Live(JupyterMixin, RenderHook):
                         self.ipy_widget.close()  # pragma: no cover
 
     def pause(self) -> None:
-        """Pause auto-refresh without clearing the display."""
+        """Pause auto-refresh."""
         with self._lock:
             if not self._started or self._paused:
                 return
