@@ -258,13 +258,19 @@ We also learned how it's important to clarify the entire design to avoid having 
 
 ### Evaluation based on the Essence standard
 
-We have improved since the first assignments. Most of our “growth” happened during the first assignments. Initially our team started out in the formed stage. By assignment 2, we had clearly moved to the collaborating stage and the team was focused on achieving the objectives.
-By assignment 3, the tight time frame caused some issues with coordination and splitting tasks, so our work alpha was not fully under control by the point. We focused on better planning by assignment 4 so the work alpha could be under control and then concluded.
-During assignment 4 we also clearly went through the opportunity alphas, beginning with identifying an opportunity in the form of an issue, establishing the value of resolving the issue, deciding if it's viable and then addressing it.
-Roles were clearly divided during all the assignments across the entire course. We improved by making deadlines and individual progress more clear, which reduced some workflow issues we experienced during the earlier assignments.
+### Team Alpha
+We have improved since the first assignments, when most of our growth. At the beginning of the course, the team was in the formed state.  By Assignment 2, we judged that we had gone into the collaborative state. Responsibilities were clear, and members worked independently. 
+During Assignment 3, the compressed timeline created weaknesses when it came to planning and task distribution. Individual contributions were completed, coordination around work products was not fully under control. 
+In Assignment 4, we addressed these shortcomings by clarifying deadlines and defining goals more clearly. Roles remained clearly divided. By this stage, the Team alpha had reached the stable and performing state.
+The use of SEMAT checklists contributed to this progression. Even though they were a bit abstract, they were useful as points that helped us assess progress. 7
 
-We found that one of the main benefits of using SEMAT to evaluate progress is the checklists, even though they are a bit abstract at times.
+### Opportunity Alpha:
+In Assignment 4, we explicitly progressed through the Opportunity alpha states. We began by identifying an issue in the upstream project, articulating the value of resolving it, and evaluating its feasibility within the scope and constraints of the course. After confirming viability, we proceeded with implementation and validation.
+This structured progression reflects a deliberate movement from opportunity identification to value realization, rather than treating the issue purely as a technical task.
 
-Optional (point 6): How would you put your work in context with best software engineering practice?
+### Context within Best Software Engineering Practice:
+Iterative improvement: Each assignment functioned as an iteration in which we reflected on process weaknesses and implemented adjustments. One clear mistake occurred during Assignment 3 when we underestimated coordination complexity under time pressure, but we could improve on this later.
+Role allocation: Everyone was given a role with defined objectives for the project. 
+Process evaluation: Using SEMAT’s alphas and checklists made self assessment more systematic.
 
 Optional (point 7): After picking an issue we got in contact with maintainer, who advised to approach the issue differently from what we hsve planned initially. We believe it exceeds the scope of the assignment.
