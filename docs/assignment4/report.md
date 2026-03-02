@@ -66,6 +66,14 @@ Compared to Assignment 3, setup was faster because we already knew the project s
 The project already has a GitHub Actions workflow (`.github/workflows/pythonpackage.yml`) that runs on pull requests. But added also so it is triggered on push to the master branch. And also had to manually turn it on for the repository.
 
 ## Effort spent
+|Name    | Github username        |
+|--------|------------------------|
+|Filip   | @FilipDimitrijevic97   |
+|Anna    | @annaLiksomething      |
+|Jingze  | @JingzeGuo             |
+|Louisa  | @louisazhangg          |
+|Erik    | @eSirborg              |
+
 
 For each team member, time spent (in hours) per activity:
 
@@ -135,7 +143,8 @@ git diff e90abf9 HEAD -- rich/progress.py
 git diff e90abf9 HEAD -- tests/test_live.py
 ```
 
-Optional (point 4): the patch is clean.
+## Optional (point 4): the patch is clean.
+
 (a) We add new code rather than refactor; there is no obsolete code to remove or comment out. (b) The patch produces no extraneous output such as debug prints. (c) All code is formatted with Black (the project standard); we run `poetry run black .` before committing, so there are no unnecessary whitespace changes. Black formatting is required for CI to pass (the format-check step fails otherwise), so the patch is consistent with the project’s style and passes all automated checks when merged into master.
 
 ## Test results
@@ -174,31 +183,11 @@ tests/test_live.py::test_resume_preserves_prior_output PASSED
 
 ![UML diagram](uml.png)
 
-Optional (point 1): Architectural overview.
+## Optional (point 1): Architectural overview.
 
 ### Purpose
 
 Rich is a Python library for rich text and beautiful formatting in the terminal. It lets developers add colour, style, tables, progress bars, markdown, syntax highlighting, and tracebacks to terminal output. The library targets Python 3.8+ and runs on Linux, macOS, and Windows. It is widely used in CLI tools, build systems, and development environments.
-
-### Core abstraction: renderables
-
-The central abstraction in Rich is the **renderable**. Any object that can be displayed implements `__rich_console__()`, which receives a `Console` and `ConsoleOptions` and yields **segments**, pieces of text plus optional style (colour, bold, etc.). Strings, `Text`, `Table`, `Panel`, and `Progress` are all renderables. The `Console` class is the main entry point: it receives renderables, resolves them to segments, applies styles, and writes ANSI escape sequences to the output stream (stdout, a file, or a buffer).
-
-### Rendering pipeline
-
-When `Console.print()` is called, the Console walks the renderable tree. Each renderable’s `__rich_console__()` is invoked; it may yield segments directly or delegate to child renderables. Segments are collected, measured, and laid out according to the terminal width. The Console then converts segments to ANSI codes and writes them. For interactive terminals, the Console can also redirect stdout/stderr so that `print()` goes through Rich.
-
-### Live display subsystem
-
-Some content updates over time (e.g. progress bars, spinners). Rich uses the **Live** class for this. Live registers a **render hook** with the Console: before any output is written, the hook’s `process_renderables()` is called. It injects a “reset” step (move cursor to the top of the live area) and the current renderable. The result is that the live area is redrawn in place on each refresh.
-
-**LiveRender** wraps the actual renderable and tracks `_shape` — the width and height of the last render. This is needed because the reset step must move the cursor up by the correct number of lines. `position_cursor()` returns a **Control** object: a sequence of ANSI codes (carriage return, cursor up, erase line) that moves the cursor to the top of the live area and erases the previous content. **Control** is a small class that holds these non-printable codes; the Console outputs them via `control()`.
-
-When Live is stopped (e.g. when a progress bar finishes), the hook is removed. If `transient=True`, Live also calls `restore_cursor()` — a Control that moves the cursor up and erases the live area so it disappears. The bug we address: `_shape` was not reset after this, so a subsequent `start()` used stale height and overwrote prior output.
-
-### Progress layer
-
-**Progress** is a high-level API for progress bars. It creates a Live instance with a renderable that displays one or more task rows (description, bar, percentage, time). Progress delegates `start()` and `stop()` to Live. Users call `add_task()`, `advance()`, and `refresh()`. Progress also supports `transient=True`, which clears the bars when done.
 
 ### Architecture diagram
 
@@ -233,7 +222,27 @@ The following diagram summarises the main components and data flow:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Optional (point 2): relation to design pattern(s).
+### Core abstraction: renderables
+
+The central abstraction in Rich is the **renderable**. Any object that can be displayed implements `__rich_console__()`, which receives a `Console` and `ConsoleOptions` and yields **segments**, pieces of text plus optional style (colour, bold, etc.). Strings, `Text`, `Table`, `Panel`, and `Progress` are all renderables. The `Console` class is the main entry point: it receives renderables, resolves them to segments, applies styles, and writes ANSI escape sequences to the output stream (stdout, a file, or a buffer).
+
+### Rendering pipeline
+
+When `Console.print()` is called, the Console walks the renderable tree. Each renderable’s `__rich_console__()` is invoked; it may yield segments directly or delegate to child renderables. Segments are collected, measured, and laid out according to the terminal width. The Console then converts segments to ANSI codes and writes them. For interactive terminals, the Console can also redirect stdout/stderr so that `print()` goes through Rich.
+
+### Live display subsystem
+
+Some content updates over time (e.g. progress bars, spinners). Rich uses the **Live** class for this. Live registers a **render hook** with the Console: before any output is written, the hook’s `process_renderables()` is called. It injects a “reset” step (move cursor to the top of the live area) and the current renderable. The result is that the live area is redrawn in place on each refresh.
+
+**LiveRender** wraps the actual renderable and tracks `_shape` — the width and height of the last render. This is needed because the reset step must move the cursor up by the correct number of lines. `position_cursor()` returns a **Control** object: a sequence of ANSI codes (carriage return, cursor up, erase line) that moves the cursor to the top of the live area and erases the previous content. **Control** is a small class that holds these non-printable codes; the Console outputs them via `control()`.
+
+When Live is stopped (e.g. when a progress bar finishes), the hook is removed. If `transient=True`, Live also calls `restore_cursor()` — a Control that moves the cursor up and erases the live area so it disappears. The bug we address: `_shape` was not reset after this, so a subsequent `start()` used stale height and overwrote prior output.
+
+### Progress layer
+
+**Progress** is a high-level API for progress bars. It creates a Live instance with a renderable that displays one or more task rows (description, bar, percentage, time). Progress delegates `start()` and `stop()` to Live. Users call `add_task()`, `advance()`, and `refresh()`. Progress also supports `transient=True`, which clears the bars when done.
+
+## Optional (point 2): relation to design pattern(s).
 
 Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()` hides the progress bars (like transient stop): it removes the render hook, stops the refresh thread, clears the display (if transient), and resets `_shape`. `resume()` re-adds the render hook, restarts the refresh thread, and triggers a refresh so the bars reappear at the current cursor position. This supports the use case of temporarily hiding progress for user input (e.g. a prompt) and then resuming.
 
@@ -253,4 +262,6 @@ We found that one of the main benefits of using SEMAT to evaluate progress is th
 
 Optional (point 6): How would you put your work in context with best software engineering practice?
 
-Optional (point 7): After picking an issue we got in contact with maintainer, who advised to approach the issue differently from what we hsve planned initially. We believe it exceeds the scope of the assignment.
+## Optional (point 7): 
+
+After picking an issue we got in contact with maintainer, who advised to approach the issue differently from what we hsve planned initially. We believe it exceeds the scope of the assignment.
