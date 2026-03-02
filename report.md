@@ -186,21 +186,21 @@ tests/test_live.py::test_resume_preserves_prior_output PASSED
 
 ![UML diagram](uml.png)
 
-Optional (point 1): Architectural overview.
+### Architectural overview
 
-### Purpose
+#### Purpose
 
 Rich is a Python library for rich text and beautiful formatting in the terminal. It lets developers add colour, style, tables, progress bars, markdown, syntax highlighting, and tracebacks to terminal output. The library targets Python 3.8+ and runs on Linux, macOS, and Windows. It is widely used in CLI tools, build systems, and development environments.
 
-### Core abstraction: renderables
+#### Core abstraction: renderables
 
 The central abstraction in Rich is the **renderable**. Any object that can be displayed implements `__rich_console__()`, which receives a `Console` and `ConsoleOptions` and yields **segments**, pieces of text plus optional style (colour, bold, etc.). Strings, `Text`, `Table`, `Panel`, and `Progress` are all renderables. The `Console` class is the main entry point: it receives renderables, resolves them to segments, applies styles, and writes ANSI escape sequences to the output stream (stdout, a file, or a buffer).
 
-### Rendering pipeline
+#### Rendering pipeline
 
 When `Console.print()` is called, the Console walks the renderable tree. Each renderable’s `__rich_console__()` is invoked; it may yield segments directly or delegate to child renderables. Segments are collected, measured, and laid out according to the terminal width. The Console then converts segments to ANSI codes and writes them. For interactive terminals, the Console can also redirect stdout/stderr so that `print()` goes through Rich.
 
-### Live display subsystem
+#### Live display subsystem
 
 Some content updates over time (e.g. progress bars, spinners). Rich uses the **Live** class for this. Live registers a **render hook** with the Console: before any output is written, the hook’s `process_renderables()` is called. It injects a “reset” step (move cursor to the top of the live area) and the current renderable. The result is that the live area is redrawn in place on each refresh.
 
@@ -208,11 +208,11 @@ Some content updates over time (e.g. progress bars, spinners). Rich uses the **L
 
 When Live is stopped (e.g. when a progress bar finishes), the hook is removed. If `transient=True`, Live also calls `restore_cursor()` — a Control that moves the cursor up and erases the live area so it disappears. The bug we address: `_shape` was not reset after this, so a subsequent `start()` used stale height and overwrote prior output.
 
-### Progress layer
+#### Progress layer
 
 **Progress** is a high-level API for progress bars. It creates a Live instance with a renderable that displays one or more task rows (description, bar, percentage, time). Progress delegates `start()` and `stop()` to Live. Users call `add_task()`, `advance()`, and `refresh()`. Progress also supports `transient=True`, which clears the bars when done.
 
-### Architecture diagram
+#### Architecture diagram
 
 The following diagram summarises the main components and data flow:
 
@@ -251,11 +251,13 @@ Our `pause()` and `resume()` methods extend the Live display subsystem. `pause()
 
 ## Overall experience
 
-Main take-aways from the project:
+### Main takeaways
+
 Our main take-away was experience from working on a real open-source codebase such as Rich. Unlike the earlier assignments where we controlled the entire project, this project required understanding much code and architecture that had already been established and making our changes compatible with what already existed.
 We also learned how it's important to clarify the entire design to avoid having design decisions be misinterpreted as bugs, which was clarified by the maintainer of the project.
 
-Evaluation based on the essence standard:
+### Evaluation based on the Essence standard
+
 We have improved since the first assignments. Most of our “growth” happened during the first assignments. Initially our team started out in the formed stage. By assignment 2, we had clearly moved to the collaborating stage and the team was focused on achieving the objectives.
 By assignment 3, the tight time frame caused some issues with coordination and splitting tasks, so our work alpha was not fully under control by the point. We focused on better planning by assignment 4 so the work alpha could be under control and then concluded.
 During assignment 4 we also clearly went through the opportunity alphas, beginning with identifying an opportunity in the form of an issue, establishing the value of resolving the issue, deciding if it's viable and then addressing it.
