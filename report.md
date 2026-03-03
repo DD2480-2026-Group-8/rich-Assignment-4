@@ -130,6 +130,8 @@ Three files were modified:
 
 - `tests/test_live.py `
 
+- `tests/test_progress.py `
+
 The primary changes include:
 
 - Adding new `pause()` and `resume()` functions
@@ -150,7 +152,9 @@ git diff e90abf9 HEAD -- tests/test_live.py
 
 ## Test results
 
-A total of nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now.
+Nine tests were added for the refactored code. Since refactoring consisted of adding new methods, the test were focused on assesing those, which meant no change present in coverage. As the tests and new code were written in parallel, a bug was detected when testing: calling `stop()` after `pause()` resulted in index error, as `stop()` was attempting to clear an already empty stack (`pause()`cleared it first). The bug was resolved and all tests pass now.
+
+In addition, six separate tests were written for the Progress class in tests/test_progress.py, verifying that pause() and resume() correctly with the Live instance and that task state is preserved across the calls.
 
 All outlined requirements have a test associated with it. REQ-1 is tested for alt screen and Jupyter as cursor restore must be skipped.  `test_paused_resumed_refresh_thread` while is not linked to one of the outlined requirements, checks the basic functionality of `pause()` and `resume()` making sure `refresh()` is not called during pause and is restored after resuming. The situation is similar with `test_stop_after_pause`
 
@@ -176,6 +180,12 @@ tests/test_live.py::test_pause_non_transient PASSED
 tests/test_live.py::test_pause_transient_alt PASSED
 tests/test_live.py::test_pause_transient_jupyter PASSED
 tests/test_live.py::test_resume_preserves_prior_output PASSED
+tests/test_progress.py::test_pause_live PASSED
+tests/test_progress.py::test_pause_nothing_when_disabled PASSED
+tests/test_progress.py::test_resume_live PASSED
+tests/test_progress.py::test_resume_nothing_when_disabled PASSED
+tests/test_progress.py::test_pause_resume PASSED
+tests/test_progress.py::test_pause_resume_state PASSED
 ```
 
 ## UML class diagram and its description
